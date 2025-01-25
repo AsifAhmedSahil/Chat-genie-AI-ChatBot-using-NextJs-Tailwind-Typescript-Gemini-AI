@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send, Trash2 } from "lucide-react";
+import { Send, Sparkles, Trash2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 interface Message {
   role: "user" | "assistant";
@@ -45,6 +46,29 @@ export default function ChatPage() {
   }
 
   useEffect(scrollToBottom, [])
+
+  useEffect(() => {
+    if (currentTypingIndex >= 0 && currentTypingIndex < messages.length) {
+      const message = messages[currentTypingIndex]
+      if (message.role === "assistant") {
+        setIsTyping(true)
+        const words = message.content.split(" ")
+        let wordIndex = 0
+        const typingInterval = setInterval(() => {
+          if (wordIndex < words.length) {
+            setDisplayedWords((prev) => [...prev, words[wordIndex]])
+            wordIndex++
+          } else {
+            clearInterval(typingInterval)
+            setCurrentTypingIndex(-1)
+            setIsTyping(false)
+          }
+        }, 100) // Adjust the typing speed here (lower number = faster)
+
+        return () => clearInterval(typingInterval)
+      }
+    }
+  }, [currentTypingIndex, messages])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,15 +158,19 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-screen bg-black text-white">
       <header className="bg-gray-900 p-4 text-center fixed top-0 left-0 right-0 z-10 flex justify-between items-center">
+      <Link href={"/"}  className="flex items-center space-x-2 cursor-pointer">
+            <Sparkles className="h-8 w-8 text-blue-500" />
+            <span className="text-xl font-bold cursor-pointer">ChatGenie</span>
+          </Link>
         <h1 className="text-2xl font-bold">Your Personal AI Advisor</h1>
         <Button
           onClick={clearChat}
           variant="ghost"
           size="sm"
-          className="text-gray-400 hover:text-white"
+          className="text-white  hover:bg-red-700 bg-red-500"
         >
           <Trash2 className="h-5 w-5" />
-          <span className="sr-only">Clear Chat</span>
+          <span className="">Clear Chat</span>
         </Button>
       </header>
 
