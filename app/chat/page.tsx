@@ -1,43 +1,46 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Send, Trash2 } from "lucide-react"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Send, Trash2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Message {
-  role: "user" | "assistant"
-  content: string
-  time: string
+  role: "user" | "assistant";
+  content: string;
+  time: string;
 }
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentTypingIndex, setCurrentTypingIndex] = useState(-1)
-  const [displayedWords, setDisplayedWords] = useState<string[]>([])
-  const [isTyping, setIsTyping] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const chatBodyRef = useRef<HTMLDivElement>(null)
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentTypingIndex, setCurrentTypingIndex] = useState(-1);
+  const [displayedWords, setDisplayedWords] = useState<string[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatBodyRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim() || isLoading) return
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
       role: "user",
       content: input,
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    }
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
 
-    const updatedMessages = [...messages, userMessage]
-    setMessages(updatedMessages)
-    localStorage.setItem("chatMessages", JSON.stringify(updatedMessages))
-    setInput("")
-    setIsLoading(true)
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    localStorage.setItem("chatMessages", JSON.stringify(updatedMessages));
+    setInput("");
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -46,46 +49,71 @@ export default function ChatPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ messages: updatedMessages }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch")
+        throw new Error("Failed to fetch");
       }
 
-      const data = await response.json()
-      const formattedContent = formatAIResponse(data.content)
+      const data = await response.json();
+      const formattedContent = formatAIResponse(data.content);
       const assistantMessage: Message = {
         role: "assistant",
         content: formattedContent,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      }
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
 
-      const newUpdatedMessages = [...updatedMessages, assistantMessage]
-      setMessages(newUpdatedMessages)
-      localStorage.setItem("chatMessages", JSON.stringify(newUpdatedMessages))
-      setCurrentTypingIndex(newUpdatedMessages.length - 1)
-      setDisplayedWords([])
+      const newUpdatedMessages = [...updatedMessages, assistantMessage];
+      setMessages(newUpdatedMessages);
+      localStorage.setItem("chatMessages", JSON.stringify(newUpdatedMessages));
+      setCurrentTypingIndex(newUpdatedMessages.length - 1);
+      setDisplayedWords([]);
     } catch (error) {
-      console.error("Error:", error)
-      // Handle error (e.g., show error message to user)
+      console.error("Error:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
+  const formatAIResponse = (content: string) => {
+    const paragraphs = content.split("\n\n");
+
+    return paragraphs
+      .map((paragraph) => {
+        if (paragraph.includes("- ")) {
+          const listItems = paragraph.split("- ");
+          return `<p>${listItems[0]}</p><ul>${listItems
+            .slice(1)
+            .map((item) => `<li>${item.trim()}</li>`)
+            .join("")}</ul>`;
+        }
+
+        if (paragraph.toLowerCase().startsWith("step")) {
+          return `<p><strong>${paragraph}</strong></p>`;
+        }
+
+        return `<p>${paragraph}</p>`;
+      })
+      .join("");
+  };
   return (
     <div className="flex flex-col h-screen bg-black text-white">
-      {/* Fixed Header */}
       <header className="bg-gray-900 p-4 text-center fixed top-0 left-0 right-0 z-10 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Your Personal AI Advisor</h1>
-        <Button onClick={clearChat} variant="ghost" size="sm" className="text-gray-400 hover:text-white">
+        <Button
+          onClick={clearChat}
+          variant="ghost"
+          size="sm"
+          className="text-gray-400 hover:text-white"
+        >
           <Trash2 className="h-5 w-5" />
           <span className="sr-only">Clear Chat</span>
         </Button>
       </header>
 
-      {/* Main content */}
       <div className="flex flex-1 overflow-hidden pt-16">
-        {/* Social Links Sidebar */}
         <div className="hidden md:flex flex-col items-center space-y-6 p-6 border-r border-gray-800">
           <a href="#" className="text-gray-400 hover:text-white">
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -106,30 +134,53 @@ export default function ChatPage() {
           </a>
         </div>
 
-        {/* Chat Area */}
         <div className="flex-1 flex flex-col max-w-4xl mx-auto p-4 overflow-hidden">
-          {/* Chat Messages */}
-          <div ref={chatBodyRef} className="flex-1 overflow-y-auto mb-4 space-y-4 custom-scrollbar">
+          <div
+            ref={chatBodyRef}
+            className="flex-1 overflow-y-auto mb-4 space-y-4 custom-scrollbar"
+          >
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex items-start gap-4 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                className={`flex items-start gap-4 ${
+                  message.role === "user" ? "flex-row-reverse" : ""
+                }`}
               >
-                <Avatar className={`${message.role === "assistant" ? "bg-purple-600" : "bg-blue-600"}`}>
-                  <AvatarFallback>{message.role === "assistant" ? "AI" : "ME"}</AvatarFallback>
+                <Avatar
+                  className={`${
+                    message.role === "assistant"
+                      ? "bg-purple-600"
+                      : "bg-blue-600"
+                  }`}
+                >
+                  <AvatarFallback>
+                    {message.role === "assistant" ? "AI" : "ME"}
+                  </AvatarFallback>
                 </Avatar>
-                <div className={`flex flex-col ${message.role === "user" ? "items-end" : ""}`}>
+                <div
+                  className={`flex flex-col ${
+                    message.role === "user" ? "items-end" : ""
+                  }`}
+                >
                   <div className="bg-gray-800 rounded-lg p-4 max-w-[80%]">
                     {index === currentTypingIndex ? (
                       <>
-                        <div dangerouslySetInnerHTML={{ __html: displayedWords.join(" ") }} />
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: displayedWords.join(" "),
+                          }}
+                        />
                         <span className="animate-pulse">|</span>
                       </>
                     ) : (
-                      <div dangerouslySetInnerHTML={{ __html: message.content }} />
+                      <div
+                        dangerouslySetInnerHTML={{ __html: message.content }}
+                      />
                     )}
                   </div>
-                  <span className="text-sm text-gray-500 mt-1">{message.time}</span>
+                  <span className="text-sm text-gray-500 mt-1">
+                    {message.time}
+                  </span>
                 </div>
               </div>
             ))}
@@ -160,7 +211,6 @@ export default function ChatPage() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Message Input */}
           <form onSubmit={handleSubmit} className="mt-auto">
             <div className="relative">
               <Input
@@ -183,13 +233,17 @@ export default function ChatPage() {
           </form>
         </div>
 
-        {/* Navigation Indicators */}
         <div className="hidden lg:flex flex-col items-center justify-center gap-4 p-6 border-l border-gray-800">
           {[0, 1, 2].map((i) => (
-            <div key={i} className={`h-2 w-2 rounded-full ${i === 0 ? "bg-white" : "bg-gray-600"}`} />
+            <div
+              key={i}
+              className={`h-2 w-2 rounded-full ${
+                i === 0 ? "bg-white" : "bg-gray-600"
+              }`}
+            />
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }
