@@ -15,7 +15,7 @@ export default function Home() {
             <span className="text-xl font-bold">ChatGenie</span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            {["Pricing", "Features", "Blog", "Contact"].map((item) => (
+            {["Pricing", "Features", "Chat" ].map((item) => (
               <Link
                 key={item}
                 href={`#${item.toLowerCase()}`}
@@ -54,12 +54,12 @@ export default function Home() {
                 className="mb-4 inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-gray-800/50 backdrop-blur-sm"
               >
                 <span className="text-xs font-semibold text-blue-500 mr-1">NEW</span>
-                <span className="text-xs">Explore the 2024 features</span>
+                <span className="text-xs">Explore version 2.0</span>
               </Badge>
               <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl mb-8">
                 Transform your conversations
                 <br />
-                with <span className="text-blue-500">AI Magic</span>
+                with <span className="text-blue-500">ChatGenie</span>
               </h1>
               <p className="mx-auto max-w-2xl text-lg leading-8 text-gray-300 mb-8">
                 AI-powered chat assistant that understands context, learns from conversations, and helps you communicate
@@ -73,7 +73,7 @@ export default function Home() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-gray-700">
-                  <Link href="#demo">Watch demo</Link>
+                  <Link href="#demo">Subscription</Link>
                 </Button>
               </div>
             </div>
