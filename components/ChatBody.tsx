@@ -17,26 +17,51 @@ interface ChatBodyProps {
   isTyping: boolean;
 }
 
-const ChatBody: FC<ChatBodyProps> = ({ messages, currentTypingIndex, displayedWords, isLoading, isTyping }) => {
+const ChatBody: FC<ChatBodyProps> = ({
+  messages,
+  currentTypingIndex,
+  displayedWords,
+  isLoading,
+  isTyping,
+}) => {
   return (
     <div className="flex-1 overflow-y-auto mb-4 space-y-4 custom-scrollbar">
       {messages.map((message, index) => (
         <div
           key={index}
-          className={`flex items-start gap-4 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+          className={`flex items-start gap-4 ${
+            message.role === "user" ? "flex-row-reverse" : ""
+          }`}
         >
           <Avatar
             className={`${
               message.role === "assistant" ? "bg-purple-600" : "bg-blue-600"
             }`}
           >
-            <AvatarFallback>{message.role === "assistant" ? "AI" : "ME"}</AvatarFallback>
+            <AvatarFallback>
+              {message.role === "assistant" ? "AI" : "ME"}
+            </AvatarFallback>
           </Avatar>
-          <div className={`flex flex-col ${message.role === "user" ? "items-end" : ""}`}>
-            <div className="bg-gray-800 rounded-lg p-4 max-w-[80%]">
+          <div
+            className={`flex flex-col ${
+              message.role === "user" ? "items-end" : ""
+            }`}
+          >
+            <div
+              className={`px-4 py-2 rounded-2xl max-w-[85%] 
+      ${
+        message.role === "user"
+          ? "bg-blue-600 text-white"
+          : "bg-gray-800 text-gray-100"
+      }`}
+            >
               {index === currentTypingIndex ? (
                 <>
-                  <div dangerouslySetInnerHTML={{ __html: displayedWords.join(" ") }} />
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: displayedWords.join(" "),
+                    }}
+                  />
                   <span className="animate-pulse">|</span>
                 </>
               ) : (

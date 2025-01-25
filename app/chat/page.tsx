@@ -174,25 +174,23 @@ export default function ChatPage() {
             isLoading={isLoading}
             isTyping={isTyping}
           />
-          <form onSubmit={handleSubmit} className="mt-auto">
-            <div className="relative">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Write a message..."
-                className="w-full bg-gray-900 border-gray-800 pr-12"
-                disabled={isLoading}
-              />
-              <Button
-                type="submit"
-                size="sm"
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-200 text-black hover:bg-pink-300"
-                disabled={isLoading}
-              >
-                <Send className="h-4 w-4" />
-                <span className="sr-only">Send</span>
-              </Button>
-            </div>
+          <form onSubmit={handleSubmit} className="flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Write a message..."
+              className="flex-1 bg-gray-800/50 border-gray-700 focus:border-blue-500 text-white placeholder-gray-400"
+              disabled={isLoading}
+            />
+            <Button
+              type="submit"
+              size="icon"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 rounded-lg transition-opacity"
+              disabled={isLoading}
+            >
+              <Send className="h-4 w-4" />
+              <span className="sr-only">Send</span>
+            </Button>
           </form>
         </div>
         <Sidebar position="right" /> 
