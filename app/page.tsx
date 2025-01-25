@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { PricingSection } from "@/components/pricing-section"
+import { Footer } from "@/components/footer"
 
 
 export default function Home() {
@@ -83,7 +84,7 @@ export default function Home() {
 
        <PricingSection/>
       </main>
-
+              <Footer/>
       
     </div>
   )
