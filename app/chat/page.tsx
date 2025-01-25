@@ -14,6 +14,64 @@ interface Message {
 }
 
 export default function ChatPage() {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [currentTypingIndex, setCurrentTypingIndex] = useState(-1)
+  const [displayedWords, setDisplayedWords] = useState<string[]>([])
+  const [isTyping, setIsTyping] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const chatBodyRef = useRef<HTMLDivElement>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!input.trim() || isLoading) return
+
+    const userMessage: Message = {
+      role: "user",
+      content: input,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    }
+
+    const updatedMessages = [...messages, userMessage]
+    setMessages(updatedMessages)
+    localStorage.setItem("chatMessages", JSON.stringify(updatedMessages))
+    setInput("")
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: updatedMessages }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch")
+      }
+
+      const data = await response.json()
+      const formattedContent = formatAIResponse(data.content)
+      const assistantMessage: Message = {
+        role: "assistant",
+        content: formattedContent,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      }
+
+      const newUpdatedMessages = [...updatedMessages, assistantMessage]
+      setMessages(newUpdatedMessages)
+      localStorage.setItem("chatMessages", JSON.stringify(newUpdatedMessages))
+      setCurrentTypingIndex(newUpdatedMessages.length - 1)
+      setDisplayedWords([])
+    } catch (error) {
+      console.error("Error:", error)
+      // Handle error (e.g., show error message to user)
+    } finally {
+      setIsLoading(false)
+    }
+  }
   return (
     <div className="flex flex-col h-screen bg-black text-white">
       {/* Fixed Header */}
