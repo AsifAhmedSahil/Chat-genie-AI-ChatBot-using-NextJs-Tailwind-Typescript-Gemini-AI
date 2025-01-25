@@ -1,12 +1,13 @@
+// pages/chat.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send, Sparkles, Trash2 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import Link from "next/link";
+import { Send } from "lucide-react";
+import ChatBody from "@/components/ChatBody"; // Import the ChatBody component
+import Header from "@/components/Header"; // Import the Header component
+import Sidebar from "@/components/Sidebar"; // Import the Sidebar component
+import { Button } from "@/components/ui/button";
 
 interface Message {
   role: "user" | "assistant";
@@ -22,53 +23,51 @@ export default function ChatPage() {
   const [displayedWords, setDisplayedWords] = useState<string[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatBodyRef = useRef<HTMLDivElement>(null);
+  // const chatBodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const storedMessages = localStorage.getItem("chatMessages")
+    const storedMessages = localStorage.getItem("chatMessages");
     if (storedMessages) {
-      setMessages(JSON.parse(storedMessages))
+      setMessages(JSON.parse(storedMessages));
     } else {
       const initialMessage: Message = {
         role: "assistant",
         content: "Hello! How can I assist you today?",
         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      }
-      setMessages([initialMessage])
-      localStorage.setItem("chatMessages", JSON.stringify([initialMessage]))
+      };
+      setMessages([initialMessage]);
+      localStorage.setItem("chatMessages", JSON.stringify([initialMessage]));
     }
-  }, [])
-
-  // implement scroll animation for message 
+  }, []);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-  useEffect(scrollToBottom, [])
+  useEffect(scrollToBottom, []);
 
   useEffect(() => {
     if (currentTypingIndex >= 0 && currentTypingIndex < messages.length) {
-      const message = messages[currentTypingIndex]
+      const message = messages[currentTypingIndex];
       if (message.role === "assistant") {
-        setIsTyping(true)
-        const words = message.content.split(" ")
-        let wordIndex = 0
+        setIsTyping(true);
+        const words = message.content.split(" ");
+        let wordIndex = 0;
         const typingInterval = setInterval(() => {
           if (wordIndex < words.length) {
-            setDisplayedWords((prev) => [...prev, words[wordIndex]])
-            wordIndex++
+            setDisplayedWords((prev) => [...prev, words[wordIndex]]);
+            wordIndex++;
           } else {
-            clearInterval(typingInterval)
-            setCurrentTypingIndex(-1)
-            setIsTyping(false)
+            clearInterval(typingInterval);
+            setCurrentTypingIndex(-1);
+            setIsTyping(false);
           }
-        }, 100) // Adjust the typing speed here (lower number = faster)
+        }, 100); // Adjust the typing speed here (lower number = faster)
 
-        return () => clearInterval(typingInterval)
+        return () => clearInterval(typingInterval);
       }
     }
-  }, [currentTypingIndex, messages])
+  }, [currentTypingIndex, messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,6 +123,7 @@ export default function ChatPage() {
       setIsLoading(false);
     }
   };
+
   const formatAIResponse = (content: string) => {
     const paragraphs = content.split("\n\n");
 
@@ -151,127 +151,26 @@ export default function ChatPage() {
       role: "assistant",
       content: "Chat cleared. How can I assist you today?",
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    }
-    setMessages([initialMessage])
-    localStorage.setItem("chatMessages", JSON.stringify([initialMessage]))
-  }
+    };
+    setMessages([initialMessage]);
+    localStorage.setItem("chatMessages", JSON.stringify([initialMessage]));
+  };
+
   return (
     <div className="flex flex-col h-screen bg-black text-white">
-      <header className="bg-gray-900 p-4 text-center fixed top-0 left-0 right-0 z-10 flex justify-between items-center">
-      <Link href={"/"}  className="flex items-center space-x-2 cursor-pointer">
-            <Sparkles className="h-8 w-8 text-blue-500" />
-            <span className="text-xl font-bold cursor-pointer">ChatGenie</span>
-          </Link>
-        <h1 className="text-2xl font-bold">Your Personal AI Advisor</h1>
-        <Button
-          onClick={clearChat}
-          variant="ghost"
-          size="sm"
-          className="text-white  hover:bg-red-700 bg-red-500"
-        >
-          <Trash2 className="h-5 w-5" />
-          <span className="">Clear Chat</span>
-        </Button>
-      </header>
+      <Header clearChat={clearChat} />  {/* Use the Header component */}
 
       <div className="flex flex-1 overflow-hidden pt-16">
-        <div className="hidden md:flex flex-col items-center space-y-6 p-6 border-r border-gray-800">
-          <a href="#" className="text-gray-400 hover:text-white">
-            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-            </svg>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white">
-            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-            </svg>
-          </a>
-          <a href="#" className="text-gray-400 hover:text-white">
-            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-              <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-            </svg>
-          </a>
-        </div>
+        <Sidebar position="left" /> {/* Left Sidebar */}
 
         <div className="flex-1 flex flex-col max-w-4xl mx-auto p-4 overflow-hidden">
-          <div
-            ref={chatBodyRef}
-            className="flex-1 overflow-y-auto mb-4 space-y-4 custom-scrollbar"
-          >
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex items-start gap-4 ${
-                  message.role === "user" ? "flex-row-reverse" : ""
-                }`}
-              >
-                <Avatar
-                  className={`${
-                    message.role === "assistant"
-                      ? "bg-purple-600"
-                      : "bg-blue-600"
-                  }`}
-                >
-                  <AvatarFallback>
-                    {message.role === "assistant" ? "AI" : "ME"}
-                  </AvatarFallback>
-                </Avatar>
-                <div
-                  className={`flex flex-col ${
-                    message.role === "user" ? "items-end" : ""
-                  }`}
-                >
-                  <div className="bg-gray-800 rounded-lg p-4 max-w-[80%]">
-                    {index === currentTypingIndex ? (
-                      <>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: displayedWords.join(" "),
-                          }}
-                        />
-                        <span className="animate-pulse">|</span>
-                      </>
-                    ) : (
-                      <div
-                        dangerouslySetInnerHTML={{ __html: message.content }}
-                      />
-                    )}
-                  </div>
-                  <span className="text-sm text-gray-500 mt-1">
-                    {message.time}
-                  </span>
-                </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="flex items-start gap-4">
-                <Avatar className="bg-purple-600">
-                  <AvatarFallback>AI</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col space-y-2 max-w-[80%]">
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
-                  <Skeleton className="h-4 w-[150px]" />
-                </div>
-              </div>
-            )}
-            {isTyping && (
-              <div className="flex items-start gap-4">
-                <Avatar className="bg-purple-600">
-                  <AvatarFallback>AI</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col space-y-2">
-                  <div className="bg-gray-800 rounded-lg p-4 max-w-[80%]">
-                    <span className="animate-pulse">Typing...</span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
+          <ChatBody
+            messages={messages}
+            currentTypingIndex={currentTypingIndex}
+            displayedWords={displayedWords}
+            isLoading={isLoading}
+            isTyping={isTyping}
+          />
           <form onSubmit={handleSubmit} className="mt-auto">
             <div className="relative">
               <Input
@@ -294,16 +193,7 @@ export default function ChatPage() {
           </form>
         </div>
 
-        <div className="hidden lg:flex flex-col items-center justify-center gap-4 p-6 border-l border-gray-800">
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className={`h-2 w-2 rounded-full ${
-                i === 0 ? "bg-white" : "bg-gray-600"
-              }`}
-            />
-          ))}
-        </div>
+        <Sidebar position="right" /> {/* Right Sidebar */}
       </div>
     </div>
   );
