@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Sparkles } from "lucide-react"
+import { PricingSection } from "@/components/pricing-section"
 
 
 export default function Home() {
@@ -10,10 +11,10 @@ export default function Home() {
       {/* Navigation */}
       <header className="border-b border-gray-800">
         <nav className="flex items-center justify-between p-6 lg:px-8 max-w-7xl mx-auto">
-          <div className="flex items-center space-x-2">
+          <Link href={"/"}  className="flex items-center space-x-2 cursor-pointer">
             <Sparkles className="h-8 w-8 text-blue-500" />
-            <span className="text-xl font-bold">ChatGenie</span>
-          </div>
+            <span className="text-xl font-bold cursor-pointer">ChatGenie</span>
+          </Link>
           <div className="hidden md:flex items-center space-x-8">
             {["Pricing", "Features", "Chat" ].map((item) => (
               <Link
@@ -80,7 +81,7 @@ export default function Home() {
           </div>
         </section>
 
-       
+       <PricingSection/>
       </main>
 
       
