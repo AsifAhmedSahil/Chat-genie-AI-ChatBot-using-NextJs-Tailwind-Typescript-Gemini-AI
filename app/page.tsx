@@ -46,8 +46,16 @@ export default function Home() {
               </Link>
             ))}
           </div>
-          <Button asChild className="bg-blue-600 hover:bg-blue-700">
-            <Link href="/chat">Get Started</Link>
+          <Button
+            asChild
+            className="relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-blue-600 rounded hover:bg-blue-700 group"
+          >
+            <Link href="/chat">
+              <span className=" w-48  h-48 rounded rotate-[-40deg] bg-white absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
+              <span className="relative w-full text-left text-white transition-colors duration-300 ease-in-out group-hover:text-black">
+                Get Started
+              </span>
+            </Link>
           </Button>
         </nav>
       </header>
@@ -66,7 +74,7 @@ export default function Home() {
               }}
             />
           </div>
-          <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+          <div className="mx-auto max-w-7xl px-6 py-16 sm:py-32 lg:px-8">
             <div className="text-center">
               <Badge
                 variant="secondary"
@@ -89,14 +97,19 @@ export default function Home() {
               <div className="flex items-center justify-center gap-4">
                 <Button
                   asChild
-                  size="lg"
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="relative inline-flex items-center justify-start inline-block px-5 py-3 overflow-hidden font-bold rounded-lg group"
                 >
                   <Link href="/chat">
-                    Start chatting free
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <span className="w-32 h-32 rotate-45 translate-x-12 -translate-y-2 absolute left-0 top-0 bg-white opacity-[3%]" />
+                    <span className="absolute top-0 left-0 w-48 h-48 -mt-1 transition-all duration-500 ease-in-out rotate-45 -translate-x-56 -translate-y-24 bg-white opacity-100 group-hover:-translate-x-8" />
+                    <span className="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-gray-900 flex items-center">
+                      Start chatting free
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </span>
+                    <span className="absolute inset-0 border-2  rounded-lg" />
                   </Link>
                 </Button>
+
                 <Button
                   asChild
                   size="lg"
