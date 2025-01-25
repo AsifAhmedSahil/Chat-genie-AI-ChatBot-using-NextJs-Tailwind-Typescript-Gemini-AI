@@ -98,6 +98,16 @@ export default function ChatPage() {
       })
       .join("");
   };
+
+  const clearChat = () => {
+    const initialMessage: Message = {
+      role: "assistant",
+      content: "Chat cleared. How can I assist you today?",
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    }
+    setMessages([initialMessage])
+    localStorage.setItem("chatMessages", JSON.stringify([initialMessage]))
+  }
   return (
     <div className="flex flex-col h-screen bg-black text-white">
       <header className="bg-gray-900 p-4 text-center fixed top-0 left-0 right-0 z-10 flex justify-between items-center">
