@@ -1,12 +1,11 @@
-// pages/chat.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
-import ChatBody from "@/components/ChatBody"; // Import the ChatBody component
-import Header from "@/components/Header"; // Import the Header component
-import Sidebar from "@/components/Sidebar"; // Import the Sidebar component
+import ChatBody from "@/components/ChatBody"; 
+import Header from "@/components/Header"; 
+import Sidebar from "@/components/Sidebar"; 
 import { Button } from "@/components/ui/button";
 
 interface Message {
@@ -23,7 +22,7 @@ export default function ChatPage() {
   const [displayedWords, setDisplayedWords] = useState<string[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // const chatBodyRef = useRef<HTMLDivElement>(null);
+  
 
   useEffect(() => {
     const storedMessages = localStorage.getItem("chatMessages");
@@ -33,7 +32,10 @@ export default function ChatPage() {
       const initialMessage: Message = {
         role: "assistant",
         content: "Hello! How can I assist you today?",
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
       setMessages([initialMessage]);
       localStorage.setItem("chatMessages", JSON.stringify([initialMessage]));
@@ -62,7 +64,7 @@ export default function ChatPage() {
             setCurrentTypingIndex(-1);
             setIsTyping(false);
           }
-        }, 100); // Adjust the typing speed here (lower number = faster)
+        }, 100); 
 
         return () => clearInterval(typingInterval);
       }
@@ -150,7 +152,10 @@ export default function ChatPage() {
     const initialMessage: Message = {
       role: "assistant",
       content: "Chat cleared. How can I assist you today?",
-      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
     setMessages([initialMessage]);
     localStorage.setItem("chatMessages", JSON.stringify([initialMessage]));
@@ -158,11 +163,9 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-screen bg-black text-white">
-      <Header clearChat={clearChat} />  {/* Use the Header component */}
-
+      <Header clearChat={clearChat} /> 
       <div className="flex flex-1 overflow-hidden pt-16">
-        <Sidebar position="left" /> {/* Left Sidebar */}
-
+        <Sidebar position="left" /> 
         <div className="flex-1 flex flex-col max-w-4xl mx-auto p-4 overflow-hidden">
           <ChatBody
             messages={messages}
@@ -192,8 +195,7 @@ export default function ChatPage() {
             </div>
           </form>
         </div>
-
-        <Sidebar position="right" /> {/* Right Sidebar */}
+        <Sidebar position="right" /> 
       </div>
     </div>
   );
