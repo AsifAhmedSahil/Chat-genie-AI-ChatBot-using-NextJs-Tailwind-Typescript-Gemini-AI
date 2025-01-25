@@ -23,6 +23,21 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const storedMessages = localStorage.getItem("chatMessages")
+    if (storedMessages) {
+      setMessages(JSON.parse(storedMessages))
+    } else {
+      const initialMessage: Message = {
+        role: "assistant",
+        content: "Hello! How can I assist you today?",
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      }
+      setMessages([initialMessage])
+      localStorage.setItem("chatMessages", JSON.stringify([initialMessage]))
+    }
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
