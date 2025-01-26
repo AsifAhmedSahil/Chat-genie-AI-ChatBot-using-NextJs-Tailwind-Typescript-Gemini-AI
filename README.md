@@ -42,7 +42,7 @@ To run this application locally, follow the instructions below:
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/ai-chat-app.git
+   git clone https://github.com/AsifAhmedSahil/Chat-genie-AI-ChatBot-using-NextJs-Tailwind-Typescript-Gemini-AI.git
     ```
 2. Navigate into the project directory:
     ```
